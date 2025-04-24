@@ -171,6 +171,15 @@ function joinGame() {
 
     document.getElementById('playerName').innerText = username;
 
+    db.ref('players').once('value').then(snapshot => {
+      const players = snapshot.val() || {};
+      const playerCount = Object.keys(players).length;
+
+      if (playerCount === 1) {
+        showStartButton(); // 👇 call function to show button
+      }
+    });
+
     // Add spinner
     const loadingSpinner = document.createElement('div');
     loadingSpinner.className = 'loading-dots';
@@ -187,10 +196,6 @@ function joinGame() {
       document.getElementById('connectedCount').innerText = `Connected: ${connectedCount}`;
     });
 
-    if (playerKeys.length === 1) {
-      // 👑 This is the first player — show the Start button
-      showStartButton();
-    }
 
     // Listen for game start
     db.ref('game/isPlaying').on('value', snapshot => {
@@ -202,15 +207,23 @@ function joinGame() {
 }
 
 function showStartButton() {
-  const btn = document.createElement('button');
-  btn.textContent = 'Start Game';
-  btn.className = 'start-game-button';
-  btn.onclick = () => {
+  const startButton = document.createElement('button');
+  startButton.innerText = 'Start Game';
+  startButton.className = 'start-game-button';
+  startButton.style.marginTop = '20px';
+  startButton.style.backgroundColor = '#4CAF50';
+  startButton.style.fontWeight = 'bold';
+  startButton.style.padding = '12px 24px';
+  startButton.style.fontSize = '1rem';
+
+  startButton.onclick = () => {
     db.ref('game').update({ isPlaying: true });
   };
 
-  document.getElementById('waiting-screen').appendChild(btn);
+  const waitingScreen = document.getElementById('waiting-screen');
+  waitingScreen.appendChild(startButton);
 }
+
 
 // Utility function to show notifications
 function showNotification(message, type = 'info') {
