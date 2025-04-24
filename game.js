@@ -415,20 +415,6 @@ function showLeaderboard() {
         li.classList.add('show');
       }, index * 150);
     });
-
-    // Add replay button
-    const replayButton = document.createElement('button');
-    replayButton.innerText = 'Play Again';
-    replayButton.className = 'replay-button';
-    replayButton.onclick = () => {
-      showNotification("Starting a new game...", "info");
-      resetGame();
-    };
-
-    setTimeout(() => {
-      document.getElementById('leaderboard-screen').appendChild(replayButton);
-      replayButton.classList.add('show');
-    }, sorted.length * 150 + 300);
   });
 }
 
