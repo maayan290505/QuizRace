@@ -13,7 +13,7 @@ const db = firebase.database();
 
 let currentUsername = localStorage.getItem('quiz_username');
 if (!currentUsername) {
-  window.location.href = 'login.html';
+  window.location.href = 'index.html';
 }
 
 const playerRef = db.ref('players/' + currentUsername);

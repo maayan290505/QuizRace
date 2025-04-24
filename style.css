@@ -155,8 +155,8 @@ button:focus:not(:active)::after {
   animation: ripple 1s ease-out;
 }
 
-/* Login and waiting screens */
-#login-screen, #waiting-screen {
+/* index and waiting screens */
+#index-screen, #waiting-screen {
   animation: fadeIn 0.8s ease-out;
 }
 
