@@ -187,6 +187,11 @@ function joinGame() {
       document.getElementById('connectedCount').innerText = `Connected: ${connectedCount}`;
     });
 
+    if (playerKeys.length === 1) {
+      // 👑 This is the first player — show the Start button
+      showStartButton();
+    }
+
     // Listen for game start
     db.ref('game/isPlaying').on('value', snapshot => {
       if (snapshot.val() === true) {
@@ -194,6 +199,17 @@ function joinGame() {
       }
     });
   });
+}
+
+function showStartButton() {
+  const btn = document.createElement('button');
+  btn.textContent = 'Start Game';
+  btn.className = 'start-game-button';
+  btn.onclick = () => {
+    db.ref('game').update({ isPlaying: true });
+  };
+
+  document.getElementById('waiting-screen').appendChild(btn);
 }
 
 // Utility function to show notifications
