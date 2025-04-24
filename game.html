@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="logo-container">
+      <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+      <h1>Quiz Time!</h1>
+    </div>
+    
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="player-info">
+          <i class="fas fa-user-circle"></i>
+          <span id="player-username"></span>
+        </div>
+        <div id="score-display">Score: 0</div>
+      </div>
+      
+      <div class="question-container">
+        <h2 id="question-text">Loading question...</h2>
+        <p id="question-counter" class="question-counter"></p>
+      </div>
+      
+      <div id="timer" class="timer-container"></div>
+      
+      <div id="answers" class="answers-container"></div>
+    </div>
+
+    <div id="leaderboard-screen" style="display: none;">
+      <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
+      <ol id="leaderboard-list" class="leaderboard-list"></ol>
+    </div>
+  </div>
+  
+  <footer>
+    <p>© 2025 Quiz Race - The ultimate knowledge competition</p>
+  </footer>
+  
+  <script src="game.js"></script>
+</body>
+</html>

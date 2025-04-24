@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Quiz Race</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="logo-container">
+      <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+      <h1>Quiz Race</h1>
+    </div>
+    
+    <div id="login-screen">
+      <p class="welcome-text">Challenge your knowledge and compete with others in real-time!</p>
+      
+      <div class="input-group">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="usernameInput" placeholder="Enter your username" autocomplete="off">
+      </div>
+      
+      <button onclick="joinGame()">
+        <i class="fas fa-play-circle"></i> Join Game
+      </button>
+    </div>
+    
+    <div id="waiting-screen" style="display: none;">
+      <div class="player-welcome">
+        <i class="fas fa-user-circle profile-icon"></i>
+        <p>Welcome, <span id="playerName" class="highlight"></span>!</p>
+      </div>
+      
+      <div class="waiting-message">
+        <p><i class="fas fa-spinner fa-spin"></i> Waiting for other players...</p>
+        <p id="connectedCount" class="player-count">Connected: 0</p>
+      </div>
+
+      
+      <div class="game-tips">
+        <h3><i class="fas fa-lightbulb"></i> Tips</h3>
+        <ul>
+          <li>Answer questions quickly for better scores</li>
+          <li>Stay focused to beat your opponents</li>
+          <li>Have fun!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>© 2025 Quiz Race - The ultimate knowledge competition</p>
+  </footer>
+  
+  <script src="login.js"></script>
+</body>
+</html>

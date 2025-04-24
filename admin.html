@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Race Admin</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div id="admin-panel">
+    <h1>Quiz Race Admin</h1>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="questions">Questions</button>
+      <button class="tab-button" data-tab="players">Players</button>
+      <button class="tab-button" data-tab="control">Control</button>
+    </div>
+
+    <div id="tab-questions" class="tab-content active">
+      <h2>Add Question</h2>
+      <textarea id="question-text" placeholder="Enter question..."></textarea>
+      <div class="answer-group">
+        <input type="radio" name="correct" value="0"><input type="text" id="answer0" placeholder="Answer 1">
+        <input type="radio" name="correct" value="1"><input type="text" id="answer1" placeholder="Answer 2">
+        <input type="radio" name="correct" value="2"><input type="text" id="answer2" placeholder="Answer 3">
+        <input type="radio" name="correct" value="3"><input type="text" id="answer3" placeholder="Answer 4">
+      </div>
+      <button id="add-question">Add Question</button>
+      <ul id="question-list"></ul>
+    </div>
+
+    <div id="tab-players" class="tab-content">
+      <h2>Players</h2>
+      <ul id="player-list"></ul>
+    </div>
+
+    <div id="tab-control" class="tab-content">
+      <h2>Game Control</h2>
+      <label>
+        <input type="checkbox" id="game-status"> Game Playing
+      </label>
+      <button id="reset-game">Reset Game</button>
+    </div>
+  </div>
+  <script src="admin.js"></script>
+</body>
+</html>
