@@ -171,14 +171,17 @@ function joinGame() {
 
     document.getElementById('playerName').innerText = username;
 
-    db.ref('players').once('value').then(snapshot => {
-      const players = snapshot.val() || {};
-      const playerCount = Object.keys(players).length;
+    setTimeout(() => {
+      db.ref('players').once('value').then(snapshot => {
+        const players = snapshot.val() || {};
+        const playerCount = Object.keys(players).length;
 
-      if (playerCount === 1) {
-        showStartButton(); // 👇 call function to show button
-      }
-    });
+        if (playerCount === 1) {
+          showStartButton();
+        }
+      });
+    }, 500); // short delay to ensure DOM is ready
+
 
     // Add spinner
     const loadingSpinner = document.createElement('div');
