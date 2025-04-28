@@ -143,9 +143,9 @@ function createParticle(container) {
     isPlaying: false
   }).then(() => {
     // Switch screens
-    document.getElementById('login-screen').style.opacity = '0';
+    document.getElementById('index-screen').style.opacity = '0';
     setTimeout(() => {
-      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('index-screen').style.display = 'none';
       const waiting = document.getElementById('waiting-screen');
       waiting.style.display = 'flex';
       waiting.style.opacity = '1';
