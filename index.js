@@ -125,52 +125,35 @@ function createParticle(container) {
     `;
     document.head.appendChild(keyframes);
   }
-}
-function joinGame() {
+} function joinGame() {
   const username = document.getElementById('usernameInput').value.trim();
   if (!username) {
     showNotification('Please enter a username', 'error');
     return;
   }
 
-  // Save username in localStorage for use in game.js
+  const playerRef = db.ref('players').push(); // ✅ New random ID
+
+  localStorage.setItem('quiz_player_id', playerRef.key);
   localStorage.setItem('quiz_username', username);
-  currentUsername = username;
 
-  // Show loading
-  document.getElementById('usernameInput').disabled = true;
-  const joinButton = document.querySelector('button');
-  joinButton.innerHTML = '<span class="loader"></span> Joining...';
-  joinButton.disabled = true;
-
-  const playerRef = db.ref('players/' + username);
-  playerRef.once('value').then(snapshot => {
-    if (!snapshot.exists()) {
-      return playerRef.set({
-        username: username,
-        score: 0,
-        isPlaying: false
-      });
-    } else {
-      return playerRef.update({ username }); // ensure username always exists
-    }
+  playerRef.set({
+    username: username,
+    score: 0,
+    isPlaying: false
   }).then(() => {
-    // Transition to waiting screen
-    document.getElementById('index-screen').style.opacity = '0';
+    // Switch screens
+    document.getElementById('login-screen').style.opacity = '0';
     setTimeout(() => {
-      document.getElementById('index-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'none';
       const waiting = document.getElementById('waiting-screen');
       waiting.style.display = 'flex';
-      waiting.style.flexDirection = 'column';
-      waiting.style.alignItems = 'center';
-      waiting.style.justifyContent = 'center';
-      setTimeout(() => {
-        waiting.style.opacity = '1';
-      }, 50);
+      waiting.style.opacity = '1';
     }, 300);
 
     document.getElementById('playerName').innerText = username;
 
+    // ✅ After showing waiting screen, check for first player
     setTimeout(() => {
       db.ref('players').once('value').then(snapshot => {
         const players = snapshot.val() || {};
@@ -180,27 +163,14 @@ function joinGame() {
           showStartButton();
         }
       });
-    }, 500); // short delay to ensure DOM is ready
+    }, 500);
 
-
-    // Add spinner
-    const loadingSpinner = document.createElement('div');
-    loadingSpinner.className = 'loading-dots';
-    for (let i = 0; i < 3; i++) {
-      const dot = document.createElement('span');
-      loadingSpinner.appendChild(dot);
-    }
-    document.getElementById('waiting-screen').appendChild(loadingSpinner);
-
-    // Start the realtime listener
     db.ref('players').on('value', snapshot => {
       const players = snapshot.val() || {};
       const connectedCount = Object.values(players).filter(p => p.username).length;
       document.getElementById('connectedCount').innerText = `Connected: ${connectedCount}`;
     });
 
-
-    // Listen for game start
     db.ref('game/isPlaying').on('value', snapshot => {
       if (snapshot.val() === true) {
         window.location.href = 'game.html';
@@ -208,6 +178,7 @@ function joinGame() {
     });
   });
 }
+
 
 function showStartButton() {
   const startButton = document.createElement('button');
@@ -260,9 +231,9 @@ function showNotification(message, type = 'info') {
 
 // Add a window event listener to clean up the DB when user leaves
 window.addEventListener('beforeunload', () => {
-  if (currentUsername) {
-    // Use setWithPriority to make this execute before the page unloads
-    db.ref('players/' + currentUsername).remove();
+  const playerId = localStorage.getItem('quiz_player_id');
+  if (playerId) {
+    db.ref('players/' + playerId).remove();
   }
 });
 

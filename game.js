@@ -11,12 +11,15 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let currentUsername = localStorage.getItem('quiz_username');
-if (!currentUsername) {
+const playerId = localStorage.getItem('quiz_player_id');
+const currentUsername = localStorage.getItem('quiz_username');
+
+if (!currentUsername || !playerId) {
   window.location.href = 'index.html';
 }
 
-const playerRef = db.ref('players/' + currentUsername);
+const playerRef = db.ref('players/' + playerId);
+
 playerRef.once('value').then(snapshot => {
   const existing = snapshot.val();
   if (!existing || !existing.username || typeof existing.score !== 'number') {
@@ -169,10 +172,8 @@ function handleAnswer(selectedIndex) {
   } else {
     endGame();
   }
-}
-function updateScore(isCorrect) {
-  const userRef = db.ref('players/' + currentUsername + '/score');
-  userRef.transaction(score => {
+} function updateScore(isCorrect) {
+  playerRef.child('score').transaction(score => {
     if (score === null) score = 0;
     return isCorrect ? score + 1 : score;
   }, function (error, committed, snapshot) {
@@ -182,10 +183,9 @@ function updateScore(isCorrect) {
       return;
     }
 
-    currentScore = snapshot.val(); // Updated score
+    currentScore = snapshot.val();
     updateScoreUI(isCorrect);
 
-    // ✅ Proceed to next question or end game after score is committed
     if (currentQuestionIndex + 1 === allQuestions.length) {
       endGame();
     } else {
@@ -194,6 +194,7 @@ function updateScore(isCorrect) {
     }
   });
 }
+
 
 function handleAnswer(selectedIndex) {
   const correctIndex = allQuestions[currentQuestionIndex].correctIndex;
@@ -223,14 +224,16 @@ function updateScoreUI(isCorrect) {
 }
 
 function endGame() {
-  // 🔁 Re-fetch correct score from Firebase
-  db.ref('players/' + currentUsername + '/score').once('value').then(snapshot => {
-    currentScore = snapshot.val() || 0;
+  playerRef.update({ isPlaying: false }).then(() => {
 
-    db.ref('players/' + currentUsername).update({ isPlaying: false });
+    // 🔁 Re-fetch correct score from Firebase
+    db.ref('players/' + currentUsername + '/score').once('value').then(snapshot => {
+      currentScore = snapshot.val() || 0;
 
-    const quizScreen = document.getElementById('quiz-screen');
-    quizScreen.innerHTML = `
+      db.ref('players/' + currentUsername).update({ isPlaying: false });
+
+      const quizScreen = document.getElementById('quiz-screen');
+      quizScreen.innerHTML = `
       <div class="end-game-container">
         <h2 class="slide-down">Quiz Completed!</h2>
         <div class="score-container">
@@ -243,12 +246,13 @@ function endGame() {
         </div>
       </div>
     `;
-    showConfetti();
+      showConfetti();
 
-    setTimeout(() => {
-      const finalScore = document.querySelector('.final-score');
-      if (finalScore) finalScore.classList.add('pulse');
-    }, 500);
+      setTimeout(() => {
+        const finalScore = document.querySelector('.final-score');
+        if (finalScore) finalScore.classList.add('pulse');
+      }, 500);
+    });
   });
 }
 
