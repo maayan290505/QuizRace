@@ -28,6 +28,7 @@ playerRef.once('value').then(snapshot => {
       score: 0,
       isPlaying: true
     });
+    playerRef.onDisconnect().remove(); // Remove player on disconnect
   } else {
     playerRef.update({ isPlaying: true });
   }
@@ -225,14 +226,10 @@ function updateScoreUI(isCorrect) {
 }
 
 function endGame() {
-  playerRef.update({ isPlaying: false }).then(() => {
+  playerRef.once('value').then(snapshot => {
+    currentScore = snapshot.val().score || 0;
 
-    // 🔁 Re-fetch correct score from Firebase
-    db.ref('players/' + playerId + '/score').once('value').then(snapshot => {
-      currentScore = snapshot.val() || 0;
-
-      db.ref('players/' + playerId).update({ isPlaying: false });
-
+    playerRef.update({ isPlaying: false }).then(() => {
       const quizScreen = document.getElementById('quiz-screen');
       quizScreen.innerHTML = `
       <div class="end-game-container">
