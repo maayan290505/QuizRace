@@ -227,10 +227,10 @@ function endGame() {
   playerRef.update({ isPlaying: false }).then(() => {
 
     // 🔁 Re-fetch correct score from Firebase
-    db.ref('players/' + currentUsername + '/score').once('value').then(snapshot => {
+    db.ref('players/' + playerId + '/score').once('value').then(snapshot => {
       currentScore = snapshot.val() || 0;
 
-      db.ref('players/' + currentUsername).update({ isPlaying: false });
+      db.ref('players/' + playerId).update({ isPlaying: false });
 
       const quizScreen = document.getElementById('quiz-screen');
       quizScreen.innerHTML = `

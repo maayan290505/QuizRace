@@ -186,7 +186,7 @@ button:focus:not(:active)::after {
 }
 
 #answers button {
-  text-align: left;
+  text-align: right;
   padding: 1rem 1.2rem;
   border-radius: 12px;
   position: relative;
@@ -559,6 +559,8 @@ button:focus:not(:active)::after {
   font-size: 1.4rem;
   line-height: 1.4;
   margin-bottom: 1rem;
+  text-align: end;
+
   color: white;
   animation: fadeIn 0.5s ease-out;
 }

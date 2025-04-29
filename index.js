@@ -1,9 +1,11 @@
+// --- Fixed index.js joinGame() ---
+
 const firebaseConfig = {
   apiKey: "AIzaSyDzoLlTxlE6V7iW9zsAU66Ma5FiT42Ibu4",
   authDomain: "quiz-race-2e54c.firebaseapp.com",
   databaseURL: "https://quiz-race-2e54c-default-rtdb.firebaseio.com",
   projectId: "quiz-race-2e54c",
-  storageBucket: "quiz-race-2e54c.firebasestorage.app",
+  storageBucket: "quiz-race-2e54c.appspot.com",
   messagingSenderId: "103582921392",
   appId: "1:103582921392:web:20c1fb0e2d9027a2d4c175"
 };
@@ -11,128 +13,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let currentUsername = null;
-
-// Add loading animations
-window.addEventListener('DOMContentLoaded', () => {
-  // Add subtle background animation
-  createBackgroundAnimation();
-
-  // Add input animation on focus
-  const usernameInput = document.getElementById('usernameInput');
-  if (usernameInput) {
-    usernameInput.addEventListener('focus', () => {
-      document.getElementById('index-screen').classList.add('focused');
-    });
-
-    usernameInput.addEventListener('blur', () => {
-      document.getElementById('index-screen').classList.remove('focused');
-    });
-
-    // Auto-focus the username input for better UX
-    setTimeout(() => usernameInput.focus(), 500);
-  }
-});
-
-function createBackgroundAnimation() {
-  const app = document.getElementById('app');
-
-  // Create a container for the particles
-  const particlesContainer = document.createElement('div');
-  particlesContainer.className = 'particles-container';
-
-  // Add a style element for the particles
-  const styleElement = document.createElement('style');
-  styleElement.textContent = `
-    .particles-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: -1;
-    }
-    
-    .particle {
-      position: absolute;
-      background: rgba(33, 150, 243, 0.3);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-  `;
-
-  document.head.appendChild(styleElement);
-  app.prepend(particlesContainer);
-
-  // Create some particles
-  for (let i = 0; i < 15; i++) {
-    createParticle(particlesContainer);
-  }
-}
-
-function createParticle(container) {
-  const particle = document.createElement('div');
-  particle.className = 'particle';
-
-  // Random size between 2px and 8px
-  const size = Math.random() * 6 + 2;
-
-  // Random position
-  const posX = Math.random() * 100;
-  const posY = Math.random() * 100;
-
-  // Random opacity
-  const opacity = Math.random() * 0.5 + 0.1;
-
-  // Random animation duration between 15s and 40s
-  const duration = Math.random() * 25 + 15;
-
-  // Set styles
-  particle.style.width = `${size}px`;
-  particle.style.height = `${size}px`;
-  particle.style.left = `${posX}%`;
-  particle.style.top = `${posY}%`;
-  particle.style.opacity = opacity;
-
-  // Add animation
-  particle.style.animation = `floatParticle ${duration}s linear infinite`;
-
-  container.appendChild(particle);
-
-  // Add the keyframes if they don't exist yet
-  if (!document.querySelector('#particle-keyframes')) {
-    const keyframes = document.createElement('style');
-    keyframes.id = 'particle-keyframes';
-    keyframes.textContent = `
-      @keyframes floatParticle {
-        0% {
-          transform: translate(0, 0) rotate(0deg);
-        }
-        25% {
-          transform: translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px) rotate(90deg);
-        }
-        50% {
-          transform: translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px) rotate(180deg);
-        }
-        75% {
-          transform: translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px) rotate(270deg);
-        }
-        100% {
-          transform: translate(0, 0) rotate(360deg);
-        }
-      }
-    `;
-    document.head.appendChild(keyframes);
-  }
-} function joinGame() {
+function joinGame() {
   const username = document.getElementById('usernameInput').value.trim();
   if (!username) {
-    showNotification('Please enter a username', 'error');
+    alert('Please enter a username');
     return;
   }
 
-  const playerRef = db.ref('players').push(); // ✅ New random ID
+  const playerRef = db.ref('players').push(); // ✅ Random ID
 
   localStorage.setItem('quiz_player_id', playerRef.key);
   localStorage.setItem('quiz_username', username);
@@ -142,7 +30,7 @@ function createParticle(container) {
     score: 0,
     isPlaying: false
   }).then(() => {
-    // Switch screens
+    // ✅ Fix: switch correct screen id (index-screen)
     document.getElementById('index-screen').style.opacity = '0';
     setTimeout(() => {
       document.getElementById('index-screen').style.display = 'none';
@@ -153,7 +41,7 @@ function createParticle(container) {
 
     document.getElementById('playerName').innerText = username;
 
-    // ✅ After showing waiting screen, check for first player
+    // Check how many players are connected
     setTimeout(() => {
       db.ref('players').once('value').then(snapshot => {
         const players = snapshot.val() || {};
@@ -179,7 +67,6 @@ function createParticle(container) {
   });
 }
 
-
 function showStartButton() {
   const startButton = document.createElement('button');
   startButton.innerText = 'Start Game';
@@ -198,38 +85,7 @@ function showStartButton() {
   waitingScreen.appendChild(startButton);
 }
 
-
-// Utility function to show notifications
-function showNotification(message, type = 'info') {
-  // Remove any existing notifications
-  const existingNotification = document.querySelector('.notification');
-  if (existingNotification) {
-    existingNotification.remove();
-  }
-
-  // Create notification element
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.textContent = message;
-  document.body.appendChild(notification);
-
-  // Add animation
-  setTimeout(() => {
-    notification.style.opacity = '1';
-    notification.style.transform = 'translateY(0)';
-  }, 10);
-
-  // Auto-remove after 3 seconds
-  setTimeout(() => {
-    notification.style.opacity = '0';
-    notification.style.transform = 'translateY(-10px)';
-    setTimeout(() => {
-      notification.remove();
-    }, 300);
-  }, 3000);
-}
-
-// Add a window event listener to clean up the DB when user leaves
+// Auto clean up when player leaves
 window.addEventListener('beforeunload', () => {
   const playerId = localStorage.getItem('quiz_player_id');
   if (playerId) {
@@ -237,22 +93,20 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
+// Initialize game state
 function initializeGameState() {
   db.ref('game').once('value', snapshot => {
     const gameData = snapshot.val();
 
-    // If game data doesn't exist or is missing key properties, initialize it
     if (!gameData || gameData.isPlaying === undefined || gameData.isFinished === undefined) {
       db.ref('game').update({
         isPlaying: false,
         isFinished: false
       });
-      console.log("Game state initialized");
     }
   });
 }
 
-// Call this function when the app starts
 document.addEventListener('DOMContentLoaded', () => {
   initializeGameState();
 });
