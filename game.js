@@ -1007,5 +1007,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Clean up when leaving the page
 window.addEventListener('beforeunload', () => {
-  db.ref('players/' + playerId).remove();
+  if (playerId) {
+    db.ref('players/' + playerId).remove();
+  }
 });
