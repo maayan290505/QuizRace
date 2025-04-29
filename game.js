@@ -172,7 +172,9 @@ function handleAnswer(selectedIndex) {
   } else {
     endGame();
   }
-} function updateScore(isCorrect) {
+}
+
+function updateScore(isCorrect) {
   playerRef.child('score').transaction(score => {
     if (score === null) score = 0;
     return isCorrect ? score + 1 : score;
@@ -194,7 +196,6 @@ function handleAnswer(selectedIndex) {
     }
   });
 }
-
 
 function handleAnswer(selectedIndex) {
   const correctIndex = allQuestions[currentQuestionIndex].correctIndex;
@@ -1006,5 +1007,5 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Clean up when leaving the page
 window.addEventListener('beforeunload', () => {
-  db.ref('players/' + currentUsername).update({ isPlaying: false });
+  db.ref('players/' + playerId).remove();
 });
