@@ -30,6 +30,7 @@ function joinGame() {
     score: 0,
     isPlaying: false
   }).then(() => {
+    playerRef.onDisconnect().remove(); // Remove player on disconnect
     // ✅ Fix: switch correct screen id (index-screen)
     document.getElementById('index-screen').style.opacity = '0';
     setTimeout(() => {
